@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中文日记 · Китайский Дневник</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<style>
+/* ============ COOKIE BANNER ============ */
+.cookie-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 9999;
+  box-shadow: 0 -10px 40px rgba(0,0,0,.1);
+  transform: translateY(100%);
+  transition: transform .4s cubic-bezier(.4,0,.2,1);
+  flex-wrap: wrap;
+}
+.cookie-banner.show {
+  transform: translateY(0);
+}
+.cookie-text {
+  font-size: 13px;
+  color: #475569;
+  flex: 1;
+  min-width: 250px;
+  line-height: 1.5;
+}
+.cookie-text a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(74,108,247,.3);
+  text-underline-offset: 3px;
+}
+.cookie-text a:hover {
+  text-decoration-color: var(--primary);
+}
+.cookie-btn {
+  background: var(--grad-primary);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(74,108,247,.3);
+}
+.cookie-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(74,108,247,.5);
+}
+@media (max-width: 600px) {
+  .cookie-banner { padding: 14px 16px; flex-direction: column; text-align: center; }
+  .cookie-btn { width: 100%; }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #4a6cf7; --primary-dark: #3a56d4;
+  --accent: #7c3aed; --accent-light: #a78bfa;
+  --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --pink: #ec4899; --info: #06b6d4;
+  --bg: #eef2ff; --card: #fff; --text: #1e293b; --muted: #64748b;
+  --border: #e2e8f0; --radius: 18px;
+  --shadow-sm: 0 2px 8px rgba(74,108,247,.06);
+  --shadow: 0 6px 24px rgba(74,108,247,.10);
+  --shadow-lg: 0 16px 48px rgba(74,108,247,.18);
+  --grad-primary: linear-gradient(135deg, #4a6cf7, #7c3aed);
+  --grad-accent: linear-gradient(135deg, #7c3aed, #ec4899);
+  --grad-success: linear-gradient(135deg, #10b981, #34d399);
+  --grad-warning: linear-gradient(135deg, #f59e0b, #fbbf24);
+  --grad-danger: linear-gradient(135deg, #ef4444, #f87171);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, Tahoma, sans-serif;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(124,58,237,.10), transparent 40%),
+    radial-gradient(circle at 100% 0%, rgba(74,108,247,.12), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(236,72,153,.08), transparent 40%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  background: var(--card);
+  width: 100%;
+  max-width: 1240px;
+  border-radius: 28px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  align-self: flex-start;
+  min-height: 88vh;
+  animation: fadeIn .4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+[hidden] { display: none !important; }
+
+/* ============ ТОПБАР ============ */
+.topbar {
+  background: var(--grad-primary);
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.topbar::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% -20%, rgba(255,255,255,.25), transparent 50%);
+  pointer-events: none;
+}
+.brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
+.brand-icon {
+  width: 50px; height: 50px;
+  background: rgba(255,255,255,.22);
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+}
+.topbar h1 { font-size: 19px; font-weight: 800; letter-spacing: .3px; }
+.topbar .sub { font-size: 12px; opacity: .88; margin-top: 2px; letter-spacing: 1px; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }
+.btn-icon {
+  background: rgba(255,255,255,.18);
+  border: 1.5px solid rgba(255,255,255,.3);
+  color: #fff;
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  backdrop-filter: blur(6px);
+}
+.btn-icon:hover { background: rgba(255,255,255,.32); transform: translateY(-1px); }
+.user-chip {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.18);
+  border: 1.5px solid rgba(255,255,255,.3);
+  padding: 6px 16px 6px 6px;
+  border-radius: 40px;
+  font-size: 13px; font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+.user-chip .avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+/* ============ ВХОД ============ */
+.auth-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: 50px 20px; min-height: 62vh;
+}
+.auth-card {
+  background: var(--card);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 36px;
+  width: 100%; max-width: 500px;
+  border: 1px solid var(--border);
+  animation: fadeIn .4s ease;
+}
+.auth-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px;
+  background: #f1f5f9; padding: 6px; border-radius: 14px;
+}
+.auth-tab {
+  flex: 1; padding: 12px;
+  border: none; background: transparent;
+  border-radius: 10px;
+  font-weight: 700; font-size: 14px;
+  cursor: pointer; color: var(--muted);
+  font-family: inherit;
+  transition: all .2s;
+}
+.auth-tab.active {
+  background: #fff; color: var(--primary);
+  box-shadow: 0 2px 8px rgba(74,108,247,.15);
+}
+.role-picker { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.role-option {
+  flex: 1; min-width: 110px;
+  padding: 14px 8px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer; text-align: center;
+  font-size: 12px; font-weight: 700;
+  background: #fff; color: var(--muted);
+  transition: all .2s;
+}
+.role-option:hover { border-color: var(--accent-light); }
+.role-option.active {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #eef2ff, #ede9fe);
+  color: var(--primary);
+  box-shadow: 0 4px 12px rgba(74,108,247,.15);
+}
+.role-option .r-emoji { display: block; font-size: 26px; margin-bottom: 6px; }
+
+/* ============ ПОЛЯ ============ */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 7px; }
+.field .optional { font-weight: 400; color: var(--muted); font-size: 11px; }
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  transition: all .2s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(74,108,247,.12);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+/* ============ КНОПКИ ============ */
+.btn {
+  padding: 12px 22px;
+  border: none; border-radius: 12px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s;
+}
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--grad-primary); color: #fff; box-shadow: 0 4px 14px rgba(74,108,247,.35); }
+.btn-primary:hover { box-shadow: 0 6px 20px rgba(74,108,247,.5); transform: translateY(-1px); }
+.btn-accent { background: var(--grad-accent); color: #fff; box-shadow: 0 4px 14px rgba(124,58,237,.3); }
+.btn-accent:hover { box-shadow: 0 6px 20px rgba(124,58,237,.45); transform: translateY(-1px); }
+.btn-success { background: var(--grad-success); color: #fff; }
+.btn-warning { background: var(--grad-warning); color: #fff; }
+.btn-danger { background: var(--grad-danger); color: #fff; }
+.btn-outline { background: #fff; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #f8faff; }
+.btn-full { width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 10px; }
+
+/* ============ СООБЩЕНИЯ ============ */
+.error-msg, .success-msg {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  font-weight: 500;
+}
+.error-msg { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.success-msg { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.error-msg.show, .success-msg.show { display: block; }
+.hint { font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center; }
+.hint code { background: #eef2ff; padding: 2px 8px; border-radius: 6px; color: var(--primary); font-weight: 600; }
+
+/* ============ ОСНОВНОЙ МАКЕТ ============ */
+.main-layout { display: flex; min-height: 76vh; }
+.sidebar {
+  width: 230px;
+  background: linear-gradient(180deg, #f8faff 0%, #f1f4ff 100%);
+  border-right: 1px solid var(--border);
+  padding: 22px 12px;
+  flex-shrink: 0;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  color: var(--muted);
+  transition: all .2s;
+  margin-bottom: 4px;
+  border: none; background: none;
+  width: 100%; text-align: left;
+  font-family: inherit;
+}
+.nav-item:hover { background: #fff; color: var(--primary); box-shadow: var(--shadow-sm); }
+.nav-item.active {
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(74,108,247,.35);
+}
+.nav-item .icon { font-size: 18px; width: 24px; text-align: center; }
+.content-area {
+  flex: 1;
+  padding: 26px 32px;
+  overflow-y: auto;
+  max-height: 82vh;
+}
+
+/* ============ ЗАГОЛОВКИ СЕКЦИЙ ============ */
+.section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 22px; flex-wrap: wrap; gap: 10px;
+}
+.section-header h2 {
+  font-size: 22px; font-weight: 800;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============ КАРТОЧКИ ============ */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all .2s;
+}
+.card:hover { box-shadow: var(--shadow); }
+.card-title {
+  font-size: 15px; font-weight: 800;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ============ СТАТИСТИКА ============ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  border-radius: var(--radius);
+  padding: 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s;
+}
+.stat-card:hover { transform: translateY(-3px); }
+.stat-card::after {
+  content: ""; position: absolute;
+  right: -20px; top: -20px;
+  width: 80px; height: 80px;
+  background: rgba(255,255,255,.15);
+  border-radius: 50%;
+}
+.stat-card .num { font-size: 34px; font-weight: 900; line-height: 1.05; position: relative; }
+.stat-card .lbl { font-size: 11px; opacity: .92; margin-top: 6px; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; position: relative; }
+.stat-card.c1 { background: var(--grad-primary); }
+.stat-card.c2 { background: var(--grad-accent); }
+.stat-card.c3 { background: var(--grad-success); }
+.stat-card.c4 { background: var(--grad-warning); }
+
+/* ============ РАСПИСАНИЕ ============ */
+.schedule-day { margin-bottom: 20px; }
+.schedule-day .day-label {
+  font-size: 13px; font-weight: 800; color: var(--primary);
+  padding: 8px 0; border-bottom: 2px solid #eef2ff; margin-bottom: 10px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.lesson-item {
+  display: flex; gap: 14px; padding: 12px 16px;
+  background: linear-gradient(135deg, #f8faff, #fff);
+  border-radius: 12px; margin-bottom: 8px;
+  align-items: center;
+  border-left: 4px solid var(--primary);
+  transition: all .2s;
+}
+.lesson-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
+.lesson-time { font-size: 12px; font-weight: 800; color: var(--primary); min-width: 58px; }
+.lesson-info { flex: 1; }
+.lesson-info .name { font-size: 14px; font-weight: 700; }
+.lesson-info .room { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.lesson-badge {
+  font-size: 10px; padding: 3px 10px; border-radius: 20px;
+  background: #eef2ff; color: var(--primary); font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* ============ ОЦЕНКИ ============ */
+.grade-list { display: flex; flex-direction: column; gap: 10px; }
+.grade-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f8faff, #fff);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+  gap: 12px;
+  transition: all .2s;
+}
+.grade-row:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
+.grade-row .gdate { font-size: 13px; font-weight: 700; color: #334155; }
+.grade-row .gtheme { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.grade-row .gcomment { font-size: 12px; color: var(--accent); margin-top: 5px; font-style: italic; font-weight: 500; }
+.grade-badge {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 19px; color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.g5 { background: var(--grad-success); }
+.g4 { background: var(--grad-primary); }
+.g3 { background: var(--grad-warning); }
+.g2 { background: var(--grad-danger); }
+.avg-banner {
+  background: linear-gradient(135deg, #eef2ff, #ede9fe);
+  border-radius: var(--radius);
+  padding: 24px; text-align: center; margin-bottom: 20px;
+  border: 1px solid #c7d2fe;
+  position: relative; overflow: hidden;
+}
+.avg-banner::after {
+  content: "⭐"; position: absolute; right: 20px; top: 20px;
+  font-size: 40px; opacity: .15;
+}
+.avg-banner .lbl { font-size: 12px; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; }
+.avg-banner .val { font-size: 46px; font-weight: 900; background: var(--grad-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
+
+/* ============ ДЗ ============ */
+.hw-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px; margin-bottom: 14px;
+  border-left: 5px solid var(--accent);
+  transition: all .2s;
+}
+.hw-card:hover { box-shadow: var(--shadow); }
+.hw-card .hw-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.hw-card .hw-title { font-size: 15px; font-weight: 800; }
+.hw-card .hw-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.hw-desc { font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 12px; }
+.attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.attach-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #f1f5f9; padding: 6px 12px;
+  border-radius: 20px; font-size: 12px; font-weight: 600;
+  color: #475569; text-decoration: none;
+  border: 1px solid var(--border);
+  transition: all .2s;
+}
+.attach-chip:hover { border-color: var(--primary); color: var(--primary); background: #f8faff; }
+.hw-status {
+  font-size: 11px; padding: 4px 12px; border-radius: 20px;
+  font-weight: 800; white-space: nowrap;
+}
+.hw-status.new { background: #fef3c7; color: #b45309; }
+.hw-status.done { background: #d1fae5; color: #047857; }
+
+/* ============ ЧАТ ============ */
+.chat-layout {
+  display: flex; height: 500px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.chat-contacts {
+  width: 220px; background: #f8faff;
+  border-right: 1px solid var(--border);
+  overflow-y: auto; flex-shrink: 0;
+}
+.chat-contact {
+  padding: 14px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: all .2s;
+}
+.chat-contact:hover { background: #eef2ff; }
+.chat-contact.active { background: var(--grad-primary); color: #fff; }
+.chat-contact .cc-name { font-size: 13px; font-weight: 700; }
+.chat-contact .cc-preview { font-size: 11px; opacity: .75; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-main { flex: 1; display: flex; flex-direction: column; }
+.chat-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 800; font-size: 14px;
+  background: #fff;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 16px; background: #f8faff;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.msg {
+  max-width: 75%;
+  padding: 10px 14px; border-radius: 14px;
+  font-size: 14px; line-height: 1.5;
+  animation: msgIn .2s ease;
+}
+@keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg.in { background: #fff; border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.out { background: var(--grad-primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg .msg-time { font-size: 10px; opacity: .65; margin-top: 4px; }
+.chat-input-area {
+  display: flex; gap: 8px;
+  padding: 12px; border-top: 1px solid var(--border);
+  background: #fff;
+}
+.chat-input-area input { flex: 1; }
+
+/* ============ ПУСТОЕ СОСТОЯНИЕ ============ */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+
+/* ============ ФОРМЫ УЧИТЕЛЯ ============ */
+.teacher-form-card {
+  background: linear-gradient(135deg, #f8faff, #f1f4ff);
+  border: 1.5px solid #e0e7ff;
+  border-radius: var(--radius);
+  padding: 22px; margin-bottom: 20px;
+}
+.teacher-form-card h3 { font-size: 15px; color: var(--primary); margin-bottom: 16px; font-weight: 800; }
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.form-row .field { flex: 1; min-width: 140px; }
+
+/* ============ МОДАЛКА ============ */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; z-index: 100;
+  backdrop-filter: blur(4px);
+  animation: fadeIn .2s;
+}
+.modal {
+  background: #fff; border-radius: 20px;
+  padding: 28px; max-width: 420px; width: 100%;
+  box-shadow: 0 24px 64px rgba(0,0,0,.35);
+  animation: modalIn .25s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+.modal p { font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ============ ТАБЛИЦА ============ */
+.user-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.user-table th, .user-table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.user-table th { background: #f8faff; font-weight: 800; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.user-table tr.banned { opacity: .55; }
+.user-table tr:hover td { background: #f8faff; }
+.role-badge { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; }
+.role-student { background: #eef2ff; color: var(--primary); }
+.role-teacher { background: #ede9fe; color: var(--accent); }
+.role-moderator { background: #fee2e2; color: var(--danger); }
+.role-ghost { background: #f1f5f9; color: #64748b; }
+
+/* ============ GHOST ============ */
+.ghost-timer {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 13px; font-weight: 700;
+  margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border: 1px solid #fcd34d;
+  box-shadow: var(--shadow-sm);
+}
+.mode-switch { display: flex; gap: 6px; }
+.mode-switch button {
+  padding: 7px 14px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,.4);
+  background: rgba(255,255,255,.15);
+  color: #fff; cursor: pointer;
+  font-size: 12px; font-weight: 700;
+  font-family: inherit;
+  transition: all .2s;
+}
+.mode-switch button.active { background: #fff; color: var(--primary); border-color: #fff; }
+
+/* ============ ВИДЕО ============ */
+.video-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.video-item:last-child { border-bottom: none; }
+.video-item .v-title { font-weight: 800; font-size: 14px; }
+.video-item .v-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* ============ НАСТРОЙКИ ============ */
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.profile-header {
+  display: flex; align-items: center; gap: 18px;
+  padding: 20px;
+  background: linear-gradient(135deg, #eef2ff, #ede9fe);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid #c7d2fe;
+}
+.profile-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px;
+  box-shadow: 0 6px 20px rgba(74,108,247,.35);
+  flex-shrink: 0;
+}
+.profile-info h3 { font-size: 20px; font-weight: 800; }
+.profile-info .p-role { font-size: 12px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.profile-info .p-nick { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.info-row {
+  display: flex; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .lbl { color: var(--muted); font-weight: 600; }
+.info-row .val { font-weight: 700; text-align: right; }
+
+/* ============ АДАПТИВ ============ */
+@media (max-width: 768px) {
+  body { padding: 0; }
+  .app { border-radius: 0; min-height: 100vh; }
+  .main-layout { flex-direction: column; }
+  .sidebar {
+    width: 100%; border-right: none; border-bottom: 1px solid var(--border);
+    display: flex; overflow-x: auto; padding: 10px; gap: 4px;
+  }
+  .nav-item { white-space: nowrap; padding: 10px 14px; margin-bottom: 0; width: auto; }
+  .nav-item .label { display: none; }
+  .content-area { padding: 16px; max-height: none; }
+  .chat-layout { flex-direction: column; height: 460px; }
+  .chat-contacts {
+    width: 100%; height: 110px; display: flex; overflow-x: auto;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+  .chat-contact { min-width: 150px; border-bottom: none; border-right: 1px solid var(--border); }
+  .auth-wrap { padding: 28px 16px; }
+  .auth-card { padding: 26px; }
+  .topbar { padding: 14px 20px; }
+  .topbar h1 { font-size: 16px; }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ЭКРАН ВХОДА -->
+  <div id="authScreen">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">中</div>
+        <div><h1>中文日记 · Китайский Дневник</h1><div class="sub">zhōngwén rìjì</div></div>
+      </div>
+    </div>
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchAuth('login')">🔑 Вход</button>
+          <button class="auth-tab" id="tabRegister" onclick="switchAuth('register')">📝 Регистрация</button>
+        </div>
+        <div class="error-msg" id="authError"></div>
+        <div class="success-msg" id="authSuccess"></div>
+
+        <div id="loginForm">
+          <h2 style="font-size:22px;margin-bottom:6px">Вход в дневник 👋</h2>
+          <p style="color:#64748b;font-size:13px;margin-bottom:20px">Введите имя и пароль</p>
+          <div class="field"><label>Имя (логин)</label><input id="loginName" placeholder="student"></div>
+          <div class="field"><label>Пароль</label><input type="password" id="loginPass" placeholder="123"></div>
+          <button class="btn btn-primary btn-full" onclick="doLogin()">🚀 Войти</button>
+          <div class="hint">Тест: <code>student</code> / <code>moderator</code> / <code>teacher</code> (пароль <code>123</code>)</div>
+        </div>
+
+        <div id="registerForm" hidden>
+          <h2 style="font-size:22px;margin-bottom:6px">Регистрация ✨</h2>
+          <p style="color:#64748b;font-size:13px;margin-bottom:16px">Выберите тип учётной записи</p>
+          <div class="role-picker">
+            <div class="role-option active" id="roleStudent" onclick="pickRole('student')"><span class="r-emoji">👦</span>Ученик(ца)</div>
+            <div class="role-option" id="roleTeacher" onclick="pickRole('teacher')"><span class="r-emoji">👩‍🏫</span>Преподаватель</div>
+            <div class="role-option" id="roleGhost" onclick="pickRole('ghost')"><span class="r-emoji">👻</span>Призрак</div>
+          </div>
+
+          <div id="normalFields">
+            <div class="field"><label>Имя (логин)</label><input id="regName" placeholder="Иванов Иван"></div>
+            <div class="field"><label>Никнейм</label><input id="regNick" placeholder="ivanov"></div>
+            <div class="field"><label>Пароль</label><input type="password" id="regPass" placeholder="Минимум 4 символа"></div>
+            <div class="field"><label>MAX / Telegram <span class="optional">(опц.)</span></label><input id="regMessenger" placeholder="@username"></div>
+            <div class="field"><label>Реферальный код <span class="optional">(опц.)</span></label><input id="regRef" placeholder="TEACH-XXXXXX"></div>
+            <button class="btn btn-accent btn-full" onclick="doRegister()">✅ Зарегистрироваться</button>
+          </div>
+
+          <div id="ghostFields" hidden>
+            <div class="field">
+              <label>Имя <span class="optional">(единственное обязательное поле)</span></label>
+              <input id="ghostName" placeholder="Имя призрака">
+            </div>
+            <p style="font-size:12px;color:#64748b;margin-bottom:12px;line-height:1.5">👻 Учётная запись призрака живёт максимум <b>1 час</b> и удаляется при выходе. Можно свободно переключаться между учеником и учителем.</p>
+            <button class="btn btn-warning btn-full" onclick="doRegisterGhost()">👻 Войти как призрак</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+  <div id="mainScreen" hidden>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">中</div>
+        <div><h1>中文日记 · Китайский Дневник</h1><div class="sub" id="userRoleLabel">zhōngwén rìjì</div></div>
+      </div>
+      <div class="topbar-actions">
+        <div id="ghostModeSwitch" class="mode-switch" hidden>
+          <button id="modeStudentBtn" onclick="ghostSwitch('student')">👦 Ученик</button>
+          <button id="modeTeacherBtn" onclick="ghostSwitch('teacher')">👩‍🏫 Учитель</button>
+        </div>
+        <div class="user-chip" id="userChip"><span class="avatar">👤</span><span>—</span></div>
+        <button class="btn-icon" onclick="goTo('settings')" title="Настройки">⚙️</button>
+        <button class="btn-icon" onclick="logout()" title="Выйти">🚪</button>
+      </div>
+    </div>
+    <div class="main-layout">
+      <aside class="sidebar" id="sidebar"></aside>
+      <main class="content-area" id="content"></main>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal">
+    <p id="modalText"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modalCancel">Отмена</button>
+      <button class="btn btn-danger" id="modalConfirm">Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   URL-АДРЕСА XANO
+   ============================================================ */
+const API = {
+  auth:          "https://x8ki-letl-twmt.n7.xano.io/api:MpoZRQse",
+  authentication:"https://x8ki-letl-twmt.n7.xano.io/api:A2wTvjG0",
+  announcements: "https://x8ki-letl-twmt.n7.xano.io/api:announcements",
+  ghost:         "https://x8ki-letl-twmt.n7.xano.io/api:ghost",
+  grades:        "https://x8ki-letl-twmt.n7.xano.io/api:grades",
+  homeworks:     "https://x8ki-letl-twmt.n7.xano.io/api:homeworks",
+  moderator:     "https://x8ki-letl-twmt.n7.xano.io/api:moderator",
+  messages:      "https://x8ki-letl-twmt.n7.xano.io/api:if1BPiZT",
+  users:         "https://x8ki-letl-twmt.n7.xano.io/api:-EnPVxwv",
+  videos:        "https://x8ki-letl-twmt.n7.xano.io/api:kQ5PcEGA",
+  eventLogs:     "https://x8ki-letl-twmt.n7.xano.io/api:AJCkVBmH"
+};
+
+const RESERVED_NAMES = ["student", "moderator", "teacher"];
+const GHOST_TTL_MS = 60 * 60 * 1000;
+const GHOST_STORAGE_KEY = "cn_ghost_session";
+
+let state = {
+  token: localStorage.getItem("xano_token") || null,
+  user: JSON.parse(localStorage.getItem("xano_user") || "null"),
+  currentSection: "dashboard",
+  registerRole: "student",
+  activeChat: null
+};
+let ghostTimerHandle = null;
+
+/* ============================================================
+   ЗАПРОСЫ
+   ============================================================ */
+async function api(url, options = {}) {
+  const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+  if (state.token) headers["Authorization"] = `Bearer ${state.token}`;
+  const res = await fetch(url, { ...options, headers });
+  const text = await res.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+  if (!res.ok) {
+    const msg = data.message || data.error || data.raw || `Ошибка ${res.status}`;
+    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+  }
+  return data;
+}
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function escapeHtml(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function formatDate(iso) { if (!iso) return "—"; const [y,m,d] = iso.split("-"); return `${d}.${m}.${y}`; }
+function nowStr() { const d = new Date(); const pad = n => String(n).padStart(2,"0"); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function calcAvg(list) { if (!list.length) return "—"; return (list.reduce((a,b) => a + b.grade, 0) / list.length).toFixed(2); }
+function gradeClass(g) { return g === 5 ? "g5" : g === 4 ? "g4" : g === 3 ? "g3" : "g2"; }
+function formatLeft(ms) { const total = Math.max(0, Math.floor(ms / 1000)); const m = Math.floor(total / 60); const s = total % 60; return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`; }
+
+let modalResolve = null;
+function confirmModal(text) {
+  document.getElementById("modalText").textContent = text;
+  document.getElementById("modal").hidden = false;
+  return new Promise(r => { modalResolve = r; });
+}
+document.getElementById("modalCancel").onclick = () => { document.getElementById("modal").hidden = true; if (modalResolve) modalResolve(false); };
+document.getElementById("modalConfirm").onclick = () => { document.getElementById("modal").hidden = true; if (modalResolve) modalResolve(true); };
+
+/* ============================================================
+   АУТЕНТИФИКАЦИЯ
+   ============================================================ */
+function switchAuth(tab) {
+  document.getElementById("tabLogin").classList.toggle("active", tab === "login");
+  document.getElementById("tabRegister").classList.toggle("active", tab === "register");
+  document.getElementById("loginForm").hidden = tab !== "login";
+  document.getElementById("registerForm").hidden = tab !== "register";
+  document.getElementById("authError").classList.remove("show");
+  document.getElementById("authSuccess").classList.remove("show");
+}
+
+function pickRole(role) {
+  state.registerRole = role;
+  document.getElementById("roleStudent").classList.toggle("active", role === "student");
+  document.getElementById("roleTeacher").classList.toggle("active", role === "teacher");
+  document.getElementById("roleGhost").classList.toggle("active", role === "ghost");
+  document.getElementById("normalFields").hidden = role === "ghost";
+  document.getElementById("ghostFields").hidden = role !== "ghost";
+}
+
+function showAuthError(msg) {
+  const e = document.getElementById("authError");
+  e.textContent = msg; e.classList.add("show");
+  document.getElementById("authSuccess").classList.remove("show");
+}
+function showAuthSuccess(msg) {
+  const e = document.getElementById("authSuccess");
+  e.textContent = msg; e.classList.add("show");
+  document.getElementById("authError").classList.remove("show");
+}
+
+async function doLogin() {
+  const name = document.getElementById("loginName").value.trim();
+  const password = document.getElementById("loginPass").value.trim();
+  if (!name || !password) return showAuthError("Введите имя и пароль");
+  try {
+    const data = await api(API.authentication + "/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ name, password })
+    });
+    state.token = data.authToken || data.token;
+    if (!state.token) throw new Error("Сервер не вернул токен");
+    localStorage.setItem("xano_token", state.token);
+    const me = await api(API.authentication + "/auth/me", { method: "GET" });
+    state.user = me;
+    localStorage.setItem("xano_user", JSON.stringify(me));
+    enterApp();
+  } catch (e) {
+    showAuthError(e.message);
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById("regName").value.trim();
+  const nickname = document.getElementById("regNick").value.trim();
+  const password = document.getElementById("regPass").value.trim();
+  const role = state.registerRole;
+  const telegram_or_max = document.getElementById("regMessenger").value.trim();
+  const ref_code = document.getElementById("regRef").value.trim();
+  if (!name || !nickname || !password) return showAuthError("Заполните имя, никнейм и пароль");
+  if (password.length < 4) return showAuthError("Пароль минимум 4 символа");
+  if (RESERVED_NAMES.includes(name.toLowerCase()) || RESERVED_NAMES.includes(nickname.toLowerCase())) {
+    return showAuthError(`Имя/никнейм «${name}» зарезервирован`);
+  }
+  try {
+    await api(API.authentication + "/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ name, nickname, password, role, telegram_or_max, ref_code })
+    });
+    showAuthSuccess(`Аккаунт «${name}» создан! Теперь войдите.`);
+    switchAuth("login");
+    document.getElementById("loginName").value = name;
+  } catch (e) {
+    showAuthError(e.message);
+  }
+}
+
+function doRegisterGhost() {
+  const name = document.getElementById("ghostName").value.trim();
+  if (!name) return showAuthError("Введите имя призрака");
+  clearGhost();
+  const ghost = {
+    id: "ghost_" + Date.now(),
+    name,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + GHOST_TTL_MS,
+    mode: "student"
+  };
+  localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(ghost));
+  state.user = { ...ghost, role: "ghost", effectiveRole: "student" };
+  enterApp();
+  startGhostTimer();
+}
+
+function clearGhost() {
+  localStorage.removeItem(GHOST_STORAGE_KEY);
+  if (ghostTimerHandle) { clearInterval(ghostTimerHandle); ghostTimerHandle = null; }
+}
+
+function startGhostTimer() {
+  if (ghostTimerHandle) clearInterval(ghostTimerHandle);
+  ghostTimerHandle = setInterval(() => {
+    if (!state.user || state.user.role !== "ghost") return;
+    const left = state.user.expiresAt - Date.now();
+    if (left <= 0) {
+      clearGhost();
+      alert("👻 Время призрака истекло. Учётная запись удалена.");
+      forceLogout();
+      return;
+    }
+    const el = document.getElementById("ghostTimer");
+    if (el) el.textContent = formatLeft(left);
+  }, 1000);
+}
+
+function ghostSwitch(mode) {
+  if (!state.user || state.user.role !== "ghost") return;
+  state.user.effectiveRole = mode;
+  state.user.mode = mode;
+  const ghost = JSON.parse(localStorage.getItem(GHOST_STORAGE_KEY) || "null");
+  if (ghost) { ghost.mode = mode; localStorage.setItem(GHOST_STORAGE_KEY, JSON.stringify(ghost)); }
+  document.getElementById("modeStudentBtn").classList.toggle("active", mode === "student");
+  document.getElementById("modeTeacherBtn").classList.toggle("active", mode === "teacher");
+  renderSidebar();
+  renderTopbar();
+  renderContent();
+}
+
+function forceLogout() {
+  state.token = null; state.user = null; state.currentSection = "dashboard"; state.activeChat = null;
+  clearGhost();
+  localStorage.removeItem("xano_token");
+  localStorage.removeItem("xano_user");
+  document.getElementById("authScreen").hidden = false;
+  document.getElementById("mainScreen").hidden = true;
+  document.getElementById("loginPass").value = "";
+}
+
+function logout() {
+  if (state.user && state.user.role === "ghost") clearGhost();
+  forceLogout();
+}
+
+function enterApp() {
+  document.getElementById("authScreen").hidden = true;
+  document.getElementById("mainScreen").hidden = false;
+  state.currentSection = "dashboard";
+  const isGhost = state.user.role === "ghost";
+  document.getElementById("ghostModeSwitch").hidden = !isGhost;
+  if (isGhost) {
+    document.getElementById("modeStudentBtn").classList.toggle("active", state.user.effectiveRole === "student");
+    document.getElementById("modeTeacherBtn").classList.toggle("active", state.user.effectiveRole === "teacher");
+  }
+  renderSidebar();
+  renderTopbar();
+  renderContent();
+}
+
+/* ============================================================
+   ТОПБАР / САЙДБАР
+   ============================================================ */
+function renderTopbar() {
+  const chip = document.getElementById("userChip");
+  let avatar, label;
+  if (state.user.role === "ghost") {
+    avatar = "👻";
+    label = `Призрак: ${state.user.name} (${state.user.effectiveRole === "teacher" ? "учитель" : "ученик"})`;
+  } else if (state.user.role === "teacher") { avatar = "👩‍🏫"; label = state.user.name; }
+  else if (state.user.role === "moderator") { avatar = "🛡️"; label = state.user.name; }
+  else { avatar = "👦"; label = state.user.name; }
+  chip.innerHTML = `<span class="avatar">${avatar}</span><span>${escapeHtml(label)}</span>`;
+
+  const roleLabel = state.user.role === "teacher" ? "👩‍🏫 Учитель · 老师"
+    : state.user.role === "moderator" ? "🛡️ Модератор · 管理员"
+    : state.user.role === "ghost" ? (state.user.effectiveRole === "teacher" ? "👻 Призрак-учитель · 幽灵老师" : "👻 Призрак-ученик · 幽灵学生")
+    : "👦 Ученик · 学生";
+  document.getElementById("userRoleLabel").textContent = roleLabel;
+}
+
+function getEffectiveRole() {
+  if (state.user.role === "ghost") return state.user.effectiveRole;
+  return state.user.role;
+}
+
+function getNavItems() {
+  const role = getEffectiveRole();
+  const base = [{ id: "dashboard", icon: "🏠", label: "Главная" }];
+  if (role === "student") return [...base,
+    { id: "schedule", icon: "📅", label: "Расписание" },
+    { id: "grades", icon: "📊", label: "Оценки" },
+    { id: "homework", icon: "📝", label: "ДЗ" },
+    { id: "announcements", icon: "📢", label: "Объявления" },
+    { id: "chat", icon: "💬", label: "Чат" },
+    { id: "settings", icon: "⚙️", label: "Настройки" }
+  ];
+  if (role === "teacher") return [...base,
+    { id: "grades", icon: "📊", label: "Оценки" },
+    { id: "homework", icon: "📝", label: "ДЗ" },
+    { id: "announcements", icon: "📢", label: "Объявления" },
+    { id: "chat", icon: "💬", label: "Чат" },
+    { id: "settings", icon: "⚙️", label: "Настройки" }
+  ];
+  if (role === "moderator") return [...base,
+    { id: "users", icon: "👥", label: "Аккаунты" },
+    { id: "videos", icon: "🎬", label: "Видео" },
+    { id: "settings", icon: "⚙️", label: "Настройки" }
+  ];
+  return base;
+}
+
+function renderSidebar() {
+  document.getElementById("sidebar").innerHTML = getNavItems().map(i => `
+    <button class="nav-item ${state.currentSection === i.id ? 'active' : ''}" onclick="goTo('${i.id}')">
+      <span class="icon">${i.icon}</span><span class="label">${i.label}</span>
+    </button>`).join("");
+}
+
+function goTo(section) {
+  state.currentSection = section;
+  state.activeChat = null;
+  renderSidebar();
+  renderContent();
+}
+
+/* ============================================================
+   РЕНДЕР
+   ============================================================ */
+async function renderContent() {
+  const el = document.getElementById("content");
+  const role = getEffectiveRole();
+  let timerBlock = "";
+  if (state.user.role === "ghost") {
+    timerBlock = `<div class="ghost-timer"><span>👻 Призрак активен</span><span>Осталось: <b id="ghostTimer">${formatLeft(state.user.expiresAt - Date.now())}</b></span></div>`;
+  }
+  el.innerHTML = timerBlock + '<div class="empty-state">Загрузка...</div>';
+  try {
+    let html = "";
+    switch (state.currentSection) {
+      case "dashboard": html = await renderDashboard(role); break;
+      case "schedule": html = renderSchedule(); break;
+      case "grades": html = await renderGrades(role); break;
+      case "homework": html = await renderHomework(role); break;
+      case "announcements": html = await renderAnnouncements(); break;
+      case "chat": html = await renderChat(role); break;
+      case "users": html = await renderUsers(); break;
+      case "videos": html = await renderVideos(); break;
+      case "settings": html = renderSettings(); break;
+      default: html = '<div class="empty-state">Раздел не найден</div>';
+    }
+    el.innerHTML = timerBlock + html;
+    if (state.user.role === "ghost") startGhostTimer();
+  } catch (e) {
+    el.innerHTML = timerBlock + `<div class="empty-state" style="color:#ef4444">Ошибка: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+/* ---------- Главная ---------- */
+async function renderDashboard(role) {
+  let gradesCount = 0, avg = "—", hwCount = 0;
+  if (role === "student") {
+    try {
+      const g = await api(API.grades + "/grades/my");
+      const list = Array.isArray(g) ? g : (g.items || []);
+      gradesCount = list.length;
+      if (list.length) avg = (list.reduce((a,b) => a + (b.grade||0), 0) / list.length).toFixed(2);
+    } catch {}
+  }
+  try {
+    const h = await api(API.homeworks + "/homeworks");
+    hwCount = Array.isArray(h) ? h.length : (h.items || []).length;
+  } catch {}
+  const avatar = role === "teacher" ? "👩‍🏫" : role === "moderator" ? "🛡️" : "👦";
+  return `
+    <div class="stats-grid">
+      <div class="stat-card c1"><div class="num">${avg}</div><div class="lbl">⭐ Средний балл</div></div>
+      <div class="stat-card c2"><div class="num">${gradesCount}</div><div class="lbl">📊 Оценок</div></div>
+      <div class="stat-card c3"><div class="num">${hwCount}</div><div class="lbl">📝 ДЗ</div></div>
+      <div class="stat-card c4"><div class="num">${avatar}</div><div class="lbl">${role}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">👋 Добро пожаловать в 中文日记!</div>
+      <p style="font-size:14px;color:#64748b;line-height:1.6">Данные загружаются из Xano. Используйте меню слева для навигации. Загляните в <b>⚙️ Настройки</b>, чтобы привязать учителя или активировать модератора.</p>
+    </div>
+  `;
+}
+
+/* ---------- Расписание ---------- */
+function renderSchedule() {
+  const schedule = {
+    "Понедельник": [
+      { time: "08:30", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "09:25", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "10:20", name: "Математика", room: "каб. 5", type: "Урок" }
+    ],
+    "Вторник": [
+      { time: "08:30", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "09:25", name: "Английский язык", room: "каб. 8", type: "Урок" },
+      { time: "10:20", name: "История", room: "каб. 3", type: "Урок" }
+    ],
+    "Среда": [
+      { time: "08:30", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "09:25", name: "Литература", room: "каб. 7", type: "Урок" }
+    ],
+    "Четверг": [
+      { time: "08:30", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "09:25", name: "Биология", room: "каб. 11", type: "Урок" }
+    ],
+    "Пятница": [
+      { time: "08:30", name: "Китайский язык", room: "каб. 12", type: "Урок" },
+      { time: "09:25", name: "Музыка", room: "каб. 4", type: "Урок" }
+    ]
+  };
+  return `
+    <div class="section-header"><h2>📅 Расписание</h2></div>
+    ${Object.entries(schedule).map(([day, lessons]) => `
+      <div class="schedule-day">
+        <div class="day-label">${day}</div>
+        ${lessons.map(l => `<div class="lesson-item"><div class="lesson-time">${l.time}</div><div class="lesson-info"><div class="name">${escapeHtml(l.name)}</div><div class="room">${escapeHtml(l.room)}</div></div><span class="lesson-badge">${l.type}</span></div>`).join("")}
+      </div>
+    `).join("")}
+  `;
+}
+
+/* ---------- Оценки ---------- */
+async function renderGrades(role) {
+  if (role === "student") {
+    const g = await api(API.grades + "/grades/my");
+    const list = Array.isArray(g) ? g : (g.items || []);
+    const sorted = list.slice().sort((a,b) => (b.date||"").localeCompare(a.date||""));
+    return `
+      <div class="section-header"><h2>📊 Мои оценки</h2></div>
+      <div class="avg-banner"><div class="lbl">⭐ Средний балл</div><div class="val">${calcAvg(sorted)}</div></div>
+      <div class="grade-list">
+        ${sorted.length ? sorted.map(g => `
+          <div class="grade-row">
+            <div><div class="gdate">${formatDate(g.date)}</div><div class="gtheme">${escapeHtml(g.topic || "—")}</div>${g.comment ? `<div class="gcomment">💬 ${escapeHtml(g.comment)}</div>` : ""}</div>
+            <div class="grade-badge ${gradeClass(g.grade)}">${g.grade}</div>
+          </div>
+        `).join("") : '<div class="empty-state">Оценок пока нет</div>'}
+      </div>
+    `;
+  }
+  return `
+    <div class="section-header"><h2>📊 Оценки</h2></div>
+    <div class="card">
+      <div class="card-title">👩‍🏫 Панель учителя</div>
+      <p style="font-size:14px;color:#64748b;line-height:1.6">Для выставления оценок используйте панель Xano или добавьте эндпоинт <code style="background:#eef2ff;padding:2px 6px;border-radius:4px">/grades/student/{id}</code>.</p>
+    </div>
+  `;
+}
+
+/* ---------- ДЗ ---------- */
+async function renderHomework(role) {
+  const h = await api(API.homeworks + "/homeworks");
+  const list = Array.isArray(h) ? h : (h.items || []);
+  return `
+    <div class="section-header"><h2>📝 Домашние задания (${list.length})</h2></div>
+    ${list.length ? list.map(h => `
+      <div class="hw-card">
+        <div class="hw-head">
+          <div><div class="hw-title">${escapeHtml(h.title)}</div><div class="hw-meta">📅 Сдать до: ${escapeHtml(h.deadline || "—")}</div></div>
+        </div>
+        <div class="hw-desc">${escapeHtml(h.description || "")}</div>
+      </div>
+    `).join("") : '<div class="empty-state">Заданий нет</div>'}
+  `;
+}
+
+/* ---------- Объявления ---------- */
+async function renderAnnouncements() {
+  const a = await api(API.announcements + "/announcements");
+  const list = Array.isArray(a) ? a : (a.items || []);
+  return `
+    <div class="section-header"><h2>📢 Объявления (${list.length})</h2></div>
+    <div class="card">
+      ${list.length ? list.map(a => `
+        <div style="padding:12px 0;border-bottom:1px solid #e2e8f0">
+          <div style="font-weight:800;font-size:14px">${escapeHtml(a.title)}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:3px">${escapeHtml(a.created_at || "")}</div>
+          <div style="font-size:14px;margin-top:6px;line-height:1.6">${escapeHtml(a.text || "")}</div>
+        </div>
+      `).join("") : '<div class="empty-state">Объявлений нет</div>'}
+    </div>
+  `;
+}
+
+/* ---------- Чат ---------- */
+async function renderChat(role) {
+  return `
+    <div class="section-header"><h2>💬 Чат</h2></div>
+    <div class="card">
+      <div class="empty-state">💬 Чат будет доступен после настройки эндпоинтов Messages в Xano.</div>
+    </div>
+  `;
+}
+
+/* ---------- Пользователи ---------- */
+async function renderUsers() {
+  const u = await api(API.moderator + "/moderator/users");
+  const list = Array.isArray(u) ? u : (u.items || []);
+  return `
+    <div class="section-header"><h2>👥 Все аккаунты (${list.length})</h2></div>
+    <div class="card">
+      <div style="overflow-x:auto">
+        <table class="user-table">
+          <thead><tr><th>Пользователь</th><th>Роль</th><th>Статус</th></tr></thead>
+          <tbody>
+            ${list.map(u => `
+              <tr class="${u.banned ? 'banned' : ''}">
+                <td><b>${escapeHtml(u.name)}</b><br><span style="font-size:11px;color:#64748b">@${escapeHtml(u.nickname)}</span></td>
+                <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+                <td>${u.banned ? "🚫 Забанен" : "✅ Активен"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- Видео ---------- */
+async function renderVideos() {
+  const v = await api(API.videos + "/videos");
+  const list = Array.isArray(v) ? v : (v.items || []);
+  return `
+    <div class="section-header"><h2>🎬 Видео уроков (${list.length})</h2></div>
+    <div class="card">
+      ${list.length ? list.map(v => `
+        <div class="video-item">
+          <div class="v-title">${escapeHtml(v.title)}</div>
+          <div class="v-meta">${escapeHtml(v.created_at || "")}</div>
+          <a href="${escapeHtml(v.url)}" target="_blank" style="font-size:13px;color:#4a6cf7;font-weight:600">${escapeHtml(v.url)}</a>
+        </div>
+      `).join("") : '<div class="empty-state">Видео нет</div>'}
+    </div>
+  `;
+}
+
+/* ---------- Настройки профиля ---------- */
+function renderSettings() {
+  const u = state.user;
+  const isGhost = u.role === "ghost";
+  const roleLabel = { student: "👦 Ученик", teacher: "👩‍🏫 Учитель", moderator: "🛡️ Модератор", ghost: "👻 Призрак" }[u.role] || u.role;
+  const avatar = u.role === "teacher" ? "👩‍🏫" : u.role === "moderator" ? "🛡️" : u.role === "ghost" ? "👻" : "👦";
+
+  if (isGhost) {
+    return `
+      <div class="section-header"><h2>⚙️ Настройки профиля</h2></div>
+      <div class="profile-header">
+        <div class="profile-avatar">👻</div>
+        <div class="profile-info">
+          <h3>${escapeHtml(u.name)}</h3>
+          <div class="p-role">${roleLabel}</div>
+          <div class="p-nick">Временная учётная запись</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">👻 Информация о призраке</div>
+        <div class="info-row"><span class="lbl">Имя</span><span class="val">${escapeHtml(u.name)}</span></div>
+        <div class="info-row"><span class="lbl">Режим</span><span class="val">${u.effectiveRole === "teacher" ? "👩‍🏫 Учитель" : "👦 Ученик"}</span></div>
+        <div class="info-row"><span class="lbl">Осталось</span><span class="val" id="ghostTimerSettings">${formatLeft(u.expiresAt - Date.now())}</span></div>
+        <div class="info-row"><span class="lbl">Реферальные коды</span><span class="val">❌ Недоступны</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚠️ Ограничения</div>
+        <p style="font-size:14px;color:#64748b;line-height:1.6">Призрак не может использовать реферальные коды и сохранять данные в Xano. Все изменения живут только в этой сессии и удаляются при выходе или через 1 час.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="section-header"><h2>⚙️ Настройки профиля</h2></div>
+    <div class="profile-header">
+      <div class="profile-avatar">${avatar}</div>
+      <div class="profile-info">
+        <h3>${escapeHtml(u.name)}</h3>
+        <div class="p-role">${roleLabel}</div>
+        <div class="p-nick">@${escapeHtml(u.nickname || "—")}</div>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-title">📋 Данные профиля</div>
+        <div class="info-row"><span class="lbl">Имя (логин)</span><span class="val">${escapeHtml(u.name)}</span></div>
+        <div class="info-row"><span class="lbl">Никнейм</span><span class="val">@${escapeHtml(u.nickname || "—")}</span></div>
+        <div class="info-row"><span class="lbl">Роль</span><span class="val">${roleLabel}</span></div>
+        <div class="info-row"><span class="lbl">MAX / Telegram</span><span class="val">${escapeHtml(u.telegram_or_max || "—")}</span></div>
+        ${u.ref_code ? `<div class="info-row"><span class="lbl">Реф. код</span><span class="val"><code style="background:#eef2ff;padding:3px 8px;border-radius:6px;color:#4a6cf7">${escapeHtml(u.ref_code)}</code></span></div>` : ""}
+      </div>
+
+      <div class="card">
+        <div class="card-title">✏️ Изменить профиль</div>
+        <div class="field"><label>Никнейм</label><input id="settingsNickname" value="${escapeHtml(u.nickname || "")}" placeholder="Ваш никнейм"></div>
+        <div class="field"><label>MAX / Telegram</label><input id="settingsMessenger" value="${escapeHtml(u.telegram_or_max || "")}" placeholder="@username"></div>
+        <button class="btn btn-primary btn-full" onclick="saveProfile()">💾 Сохранить</button>
+      </div>
+
+      ${u.role === "student" ? `
+      <div class="card">
+        <div class="card-title">🔗 Привязка к учителю</div>
+        <p style="font-size:13px;color:#64748b;margin-bottom:12px">Введите реферальный код учителя, чтобы привязаться к нему.</p>
+        <div class="field"><label>Реферальный код</label><input id="settingsRefCode" placeholder="TEACH-XXXXXX"></div>
+        <button class="btn btn-accent btn-full" onclick="linkTeacher()">🔗 Привязать</button>
+      </div>` : ""}
+
+      ${u.role === "teacher" ? `
+      <div class="card">
+        <div class="card-title">🔑 Мой реферальный код</div>
+        <p style="font-size:13px;color:#64748b;margin-bottom:12px">Поделитесь этим кодом с учениками, чтобы они привязались к вам.</p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code style="flex:1;background:#eef2ff;padding:12px;border-radius:10px;color:#4a6cf7;font-weight:800;font-size:16px;text-align:center">${escapeHtml(u.ref_code || "Не создан")}</code>
+          <button class="btn btn-outline btn-sm" onclick="generateRefCode()">${u.ref_code ? "🔄 Пересоздать" : "➕ Создать"}</button>
+        </div>
+      </div>` : ""}
+
+      <div class="card">
+        <div class="card-title">🛡️ Активация модератора</div>
+        ${u.role === "moderator" ? `
+          <p style="font-size:14px;color:#10b981;font-weight:700">✅ Вы уже модератор!</p>
+        ` : `
+          <p style="font-size:13px;color:#64748b;margin-bottom:12px">Введите секретный код, чтобы получить права модератора.</p>
+          <div class="field"><label>Секретный код</label><input type="password" id="settingsModCode" placeholder="Введите код"></div>
+          <button class="btn btn-warning btn-full" onclick="activateModerator()">🛡️ Активировать</button>
+        `}
+      </div>
+
+      <div class="card">
+        <div class="card-title">🚪 Выход</div>
+        <p style="font-size:13px;color:#64748b;margin-bottom:12px">Завершить сессию на этом устройстве.</p>
+        <button class="btn btn-danger btn-full" onclick="logout()">Выйти из аккаунта</button>
+      </div>
+    </div>
+  `;
+}
+
+async function saveProfile() {
+  const nickname = document.getElementById("settingsNickname").value.trim();
+  const messenger = document.getElementById("settingsMessenger").value.trim();
+  if (!nickname) return alert("Никнейм не может быть пустым");
+  try {
+    // Пытаемся обновить через Xano (эндпоинт может отличаться)
+    await api(API.authentication + "/auth/me", {
+      method: "PATCH",
+      body: JSON.stringify({ nickname, telegram_or_max: messenger })
+    });
+    state.user.nickname = nickname;
+    state.user.telegram_or_max = messenger;
+    localStorage.setItem("xano_user", JSON.stringify(state.user));
+    alert("✅ Профиль сохранён!");
+    renderContent();
+  } catch (e) {
+    // Fallback: сохраняем только локально
+    state.user.nickname = nickname;
+    state.user.telegram_or_max = messenger;
+    localStorage.setItem("xano_user", JSON.stringify(state.user));
+    alert("⚠️ Сервер не принял изменения, сохранено локально.\n" + e.message);
+    renderContent();
+  }
+}
+
+async function linkTeacher() {
+  const code = document.getElementById("settingsRefCode").value.trim();
+  if (!code) return alert("Введите реферальный код");
+  try {
+    await api(API.users + "/users/link-teacher", {
+      method: "POST",
+      body: JSON.stringify({ ref_code: code })
+    });
+    alert("✅ Вы привязаны к учителю!");
+  } catch (e) {
+    alert("❌ " + e.message);
+  }
+}
+
+function generateRefCode() {
+  const code = "TEACH-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+  state.user.ref_code = code;
+  localStorage.setItem("xano_user", JSON.stringify(state.user));
+  alert("✅ Новый код: " + code + "\n(сохраните его — на сервере нужно обновить отдельно)");
+  renderContent();
+}
+
+async function activateModerator() {
+  const code = document.getElementById("settingsModCode").value.trim();
+  if (!code) return alert("Введите секретный код");
+  try {
+    await api(API.users + "/users/activate-moderator", {
+      method: "POST",
+      body: JSON.stringify({ secret_code: code })
+    });
+    state.user.role = "moderator";
+    localStorage.setItem("xano_user", JSON.stringify(state.user));
+    alert("✅ Вы стали модератором!");
+    renderTopbar();
+    renderSidebar();
+    goTo("users");
+  } catch (e) {
+    alert("❌ " + e.message);
+  }
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+(function init() {
+  const ghostRaw = localStorage.getItem(GHOST_STORAGE_KEY);
+  if (ghostRaw) {
+    try {
+      const ghost = JSON.parse(ghostRaw);
+      if (ghost.expiresAt > Date.now()) {
+        state.user = { ...ghost, role: "ghost", effectiveRole: ghost.mode || "student" };
+        enterApp();
+        startGhostTimer();
+        return;
+      } else {
+        clearGhost();
+      }
+    } catch { clearGhost(); }
+  }
+  if (state.token && state.user) {
+    enterApp();
+  } else {
+    document.getElementById("authScreen").hidden = false;
+  }
+})();
+</script>
+
+<!-- COOKIE BANNER -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-text">
+    Продолжая пользоваться этим сайтом, вы соглашаетесь с 
+    <a href="privacy.html" target="_blank">политикой конфиденциальности</a>.
+  </div>
+  <button class="cookie-btn" onclick="acceptCookies()">Принять</button>
+</div>
+
+<script>
+  // Логика всплывашки
+  (function initCookieBanner() {
+    // Проверяем, принял ли пользователь уже
+    if (!localStorage.getItem('cookies_accepted')) {
+      // Если нет — показываем с задержкой в 1 секунду (чтобы не мешать загрузке)
+      setTimeout(() => {
+        document.getElementById('cookieBanner').classList.add('show');
+      }, 1000);
+    }
+  })();
+
+  function acceptCookies() {
+    localStorage.setItem('cookies_accepted', 'true');
+    document.getElementById('cookieBanner').classList.remove('show');
+  }
+</script>
+</body>
+
+</body>
+</html>
